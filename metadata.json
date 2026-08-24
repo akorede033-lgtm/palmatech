@@ -1,0 +1,6 @@
+{
+  "name": "Palm Plantation Farm Manager",
+  "description": "Enterprise digital farm management system for 500-hectare commercial palm plantations covering blocks, workers, harvests, pests, inventory, expenses, and AI agronomy.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
