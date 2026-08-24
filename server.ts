@@ -74,13 +74,32 @@ Always format responses clearly with Markdown, using bullet points, bold headers
     } else if (blockData) {
       contents = `Context Block Data: ${JSON.stringify(blockData)}\n\nQuery: ${prompt}`;
     }
-const response = await ai.models.generateContent({
-  model: 'gemini-3.6-flash',
-  contents,
-  config: {
-    systemInstruction,
-  },
-});
+let response;
+
+for (let attempt = 1; attempt <= 3; attempt++) {
+  try {
+    response = await ai.models.generateContent({
+      model: 'gemini-3.6-flash',
+      contents,
+      config: {
+        systemInstruction,
+      },
+    });
+
+    break;
+  } catch (error: any) {
+    const isTemporaryError =
+      error?.status === 503 ||
+      error?.status === 429 ||
+      error?.message?.includes('high demand');
+
+    if (!isTemporaryError || attempt === 3) {
+      throw error;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+  }
+}
     return res.json({
       text: response.text || 'No response generated from Agronomist AI.',
     });
